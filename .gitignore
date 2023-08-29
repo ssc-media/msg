@@ -1,0 +1,6 @@
+.*.swp
+*~
+*.pcap
+*.wav
+*.m4a
+/files.mak
