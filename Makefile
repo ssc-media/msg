@@ -9,13 +9,13 @@ $(step0_done)files.mak: ./script/step0.sh
 	./script/step0.sh > $@.t
 	mv $@.t $@
 
-$(step0_done)${reac_file}:
+$(step0_done)${reac_file}: ${reac_file_abs}
 	ln -s ${reac_file_abs}
 
 step1: ch01.wav main.wav
 	echo step1_done=1 >> files.mak
 
-$(step1_done)ch01.wav $(step1_done)main.wav:
+$(step1_done)ch01.wav $(step1_done)main.wav: ${reac_file}
 	~/script/reac2wav.sh --only-channel 9,7,8 ${reac_file}
 
 step2: ch01-ebur128.txt ch01-ebu128-seek.rc ch01cut.wav maincut.wav maincut.m4a step2.rsync
@@ -52,6 +52,6 @@ step2.rsync: maincut.m4a
 step3: ch01cut-whisper.json
 	echo step3_done=1 >> files.mak
 
-ch01cut-whisper.json: ch01cut.wav
+$(step3_done)ch01cut-whisper.json: ch01cut.wav
 	whisper --model medium --language ja ch01cut.wav --output_format json
 	mv ch01cut.json ch01cut-whisper.json
