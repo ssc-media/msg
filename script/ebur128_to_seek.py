@@ -1,5 +1,8 @@
 #! /usr/bin/python3
 
+import sys
+
+
 class EBUR128:
 	def __init__(self, filename):
 		self.filename = filename
@@ -7,6 +10,9 @@ class EBUR128:
 		self.lra_high = None
 		self.th_low_time = 60.0
 		self.time_center = 2700.0 # TODO: Also see some instances and calculate average
+		self.th_add_db = -10.0;
+		self.time_add_start = -3.0
+		self.time_add_end = 3.0
 		self.candidates = []
 
 	def process_lra(self):
@@ -19,8 +25,10 @@ class EBUR128:
 					self.lra_low = float(line.split('=')[1])
 				elif line[:20] == 'lavfi.r128.LRA.high=':
 					self.lra_high = float(line.split('=')[1])
+		sys.stderr.write(f'LRA.low = {self.lra_low:.1f} dB\n')
 
 	def process_misc(self):
+		th = self.lra_low + self.th_add_db
 		with open(self.filename) as f:
 			louder = False
 			while f:
@@ -31,14 +39,15 @@ class EBUR128:
 					pts_time = float(line.split(':')[-1])
 				elif line[:13] == 'lavfi.r128.S=':
 					s = float(line.split('=')[-1])
-					if s > self.lra_low:
+					if s > th:
 						louder_last = pts_time
-					if not louder and s > self.lra_low:
+					if not louder and s > th:
 						louder = True
 						start_time = pts_time
-					elif louder and pts_time > louder_last + self.th_low_time and s < self.lra_low:
+					elif louder and pts_time > louder_last + self.th_low_time and s < th:
 						self.candidates.append((start_time, louder_last))
 						louder = False
+						sys.stderr.write(f'candidate: {start_time:.1f} -> {louder_last:.1f} length {louder_last-start_time:.1f}\n')
 
 	def find_the_best(self):
 		found_best = False
@@ -60,8 +69,8 @@ class EBUR128:
 		self.process_lra()
 		self.process_misc()
 		best = self.find_the_best()
-		print(f'seek_start={best[0]}')
-		print(f'seek_end={best[1]}')
+		print(f'seek_start={best[0] + self.time_add_start}')
+		print(f'seek_end={best[1] + self.time_add_end}')
 
 if __name__=='__main__':
 	import sys
