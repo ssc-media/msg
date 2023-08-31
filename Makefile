@@ -40,7 +40,7 @@ maincut.wav: main.wav ch01-ebu128-seek.rc
 	mv .$@ $@
 
 maincut.m4a: maincut.wav
-	ffmpeg -i maincut.wav -b 320k -y .$@
+	ffmpeg -i maincut.wav -b:a 320k -y .$@
 	mv .$@ $@
 
 step2.rsync: maincut.m4a
@@ -53,5 +53,5 @@ step3: ch01cut-whisper.json
 	echo step3_done=1 >> files.mak
 
 $(step3_done)ch01cut-whisper.json: ch01cut.wav
-	whisper --model medium --language ja ch01cut.wav --output_format json
+	whisper --model large --language ja ch01cut.wav --output_format json
 	mv ch01cut.json ch01cut-whisper.json
