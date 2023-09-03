@@ -9,10 +9,12 @@ class EBUR128:
 		self.lra_low = None
 		self.lra_high = None
 		self.th_low_time = 60.0
-		self.time_center = 2700.0 # TODO: Also see some instances and calculate average
 		self.th_add_db = -10.0;
 		self.time_add_start = -3.0
 		self.time_add_end = 3.0
+		self.time_fade = 0.0
+		self.time_range_start = None
+		self.time_range_end = None
 		self.candidates = []
 
 	def process_lra(self):
@@ -38,6 +40,10 @@ class EBUR128:
 				if line[:6] == 'frame:':
 					pts_time = float(line.split(':')[-1])
 				elif line[:13] == 'lavfi.r128.S=':
+					if self.time_range_start and pts_time < self.time_range_start:
+						continue
+					if self.time_range_end and pts_time >= self.time_range_end:
+						continue
 					s = float(line.split('=')[-1])
 					if s > th:
 						louder_last = pts_time
@@ -48,16 +54,21 @@ class EBUR128:
 						self.candidates.append((start_time, louder_last))
 						louder = False
 						sys.stderr.write(f'candidate: {start_time:.1f} -> {louder_last:.1f} length {louder_last-start_time:.1f}\n')
+			if louder:
+				self.candidates.append((start_time, louder_last))
 
 	def find_the_best(self):
 		found_best = False
 		for cand in self.candidates:
-			if self.time_center < cand[0]:
-				score = cand[0] - self.time_center
-			elif self.time_center <= cand[1]:
-				score = 0.0
+			if self.time_candidate_center:
+				if self.time_candidate_center < cand[0]:
+					score = cand[0] - self.time_candidate_center
+				elif self.time_candidate_center <= cand[1]:
+					score = 0.0
+				else:
+					score = self.time_candidate_center - cand[1]
 			else:
-				score = self.time_center - cand[1]
+				score = cand[1] - cand[0]
 			if not found_best or score < best_score:
 				best_score = score
 				best = cand
@@ -71,8 +82,31 @@ class EBUR128:
 		best = self.find_the_best()
 		print(f'seek_start={best[0] + self.time_add_start}')
 		print(f'seek_end={best[1] + self.time_add_end}')
+		if self.time_fade > 0.0:
+			print(f'fade_out_start={best[1] + self.time_add_end - (best[0] + self.time_add_start) - self.time_fade}')
 
 if __name__=='__main__':
+	import argparse
 	import sys
-	obj = EBUR128(sys.argv[1])
+	parser = argparse.ArgumentParser(
+			prog=sys.argv[0],
+			description='Calculate cut-in and -out point from the loudness data'
+	)
+	parser.add_argument('ebur128_file')
+	parser.add_argument('--time-candidate-center', default=None)
+	parser.add_argument('--time-add-start', default=-3.0)
+	parser.add_argument('--time-add-end', default=+3.0)
+	parser.add_argument('--time-fade', default=0.0)
+	parser.add_argument('--time-range-start', default=None)
+	parser.add_argument('--time-range-end', default=None)
+	args = parser.parse_args()
+
+	obj = EBUR128(args.ebur128_file)
+	obj.time_candidate_center = float(args.time_candidate_center) if args.time_candidate_center else None
+	obj.time_add_start = float(args.time_add_start)
+	obj.time_add_end = float(args.time_add_end)
+	obj.time_fade = float(args.time_fade)
+	obj.time_range_start = float(args.time_range_start) if args.time_range_start else None
+	obj.time_range_end = float(args.time_range_end) if args.time_range_end else None
+
 	obj.process()

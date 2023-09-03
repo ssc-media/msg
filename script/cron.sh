@@ -16,4 +16,4 @@ fi
 
 cd $d
 
-make step0 step1 step2 step3
+make step0 step1 step2 step3 step4 step5
