@@ -2,6 +2,9 @@
 
 set -e
 
+# `whisper` was installed by `pip3 install -U`.
+PATH="$PATH:~/.local/bin"
+
 cd -P $(dirname $0)
 cd ../..
 d=$(date -d 'next Sunday - 7 days' +%Y%m%d)
