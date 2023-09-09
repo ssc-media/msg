@@ -1,11 +1,7 @@
 include files.mak
 
-.SUFFIXES: .txt .wav .flac
+.SUFFIXES: .txt .flac
 .PRECIOUS: %-ebur128.txt
-
-%-ebur128.txt: %.wav
-	ffmpeg -i $< -filter_complex 'ebur128=metadata=1,ametadata=print:file=$@.t' -f null /dev/null
-	mv $@.t $@
 
 %-ebur128.txt: %.flac
 	ffmpeg -i $< -filter_complex 'ebur128=metadata=1,ametadata=print:file=$@.t' -f null /dev/null
@@ -23,11 +19,11 @@ $(step0_done)files.mak: ./script/step0.sh
 $(step0_done)${reac_file}: ${reac_file_abs}
 	ln -s ${reac_file_abs}
 
-step1: ch01.wav main.wav
+step1: ch01.flac main.flac
 	echo step1_done=1 >> files.mak
 
-$(step1_done)ch01.wav $(step1_done)main.wav: ${reac_file}
-	~/script/reac2wav.sh --only-channel 9,7,8 ${reac_file}
+$(step1_done)ch01.flac $(step1_done)main.flac: ${reac_file}
+	~/script/reac2wav.sh --only-channel 9,7,8 --flac ${reac_file}
 
 step2: ch01-ebur128.txt ch01-ebu128-seek.rc ch01cut.flac maincut.flac maincut.m4a step2.rsync
 	echo step2_done=1 >> files.mak
@@ -36,14 +32,14 @@ ch01-ebu128-seek.rc: script/ebur128_to_seek.py ch01-ebur128.txt
 	script/ebur128_to_seek.py --time-candidate-center 2700 ch01-ebur128.txt >$@.t
 	mv $@.t $@
 
-$(step2_done)ch01cut.flac: ch01.wav ch01-ebu128-seek.rc
+$(step2_done)ch01cut.flac: ch01.flac ch01-ebu128-seek.rc
 	. ./ch01-ebu128-seek.rc ; \
-	ffmpeg -ss $${seek_start} -to $${seek_end} -i ch01.wav -y .$@
+	ffmpeg -ss $${seek_start} -to $${seek_end} -i ch01.flac -y .$@
 	mv .$@ $@
 
-$(step2_done)maincut.flac: main.wav ch01-ebu128-seek.rc
+$(step2_done)maincut.flac: main.flac ch01-ebu128-seek.rc
 	. ./ch01-ebu128-seek.rc ; \
-	ffmpeg -ss $${seek_start} -to $${seek_end} -i main.wav -y .$@
+	ffmpeg -ss $${seek_start} -to $${seek_end} -i main.flac -y .$@
 	mv .$@ $@
 
 maincut.m4a: maincut.flac
