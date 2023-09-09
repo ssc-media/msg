@@ -36,12 +36,12 @@ ch01-ebu128-seek.rc: script/ebur128_to_seek.py ch01-ebur128.txt
 	script/ebur128_to_seek.py --time-candidate-center 2700 ch01-ebur128.txt >$@.t
 	mv $@.t $@
 
-ch01cut.flac: ch01.wav ch01-ebu128-seek.rc
+$(step2_done)ch01cut.flac: ch01.wav ch01-ebu128-seek.rc
 	. ./ch01-ebu128-seek.rc ; \
 	ffmpeg -ss $${seek_start} -to $${seek_end} -i ch01.wav -y .$@
 	mv .$@ $@
 
-maincut.flac: main.wav ch01-ebu128-seek.rc
+$(step2_done)maincut.flac: main.wav ch01-ebu128-seek.rc
 	. ./ch01-ebu128-seek.rc ; \
 	ffmpeg -ss $${seek_start} -to $${seek_end} -i main.wav -y .$@
 	mv .$@ $@
