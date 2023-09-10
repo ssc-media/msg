@@ -3,7 +3,7 @@
 set -e
 
 # `whisper` was installed by `pip3 install -U`.
-PATH="$PATH:~/.local/bin"
+PATH="$PATH:$HOME/.local/bin"
 
 cd -P $(dirname $0)
 cd ../..
