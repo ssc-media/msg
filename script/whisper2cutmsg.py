@@ -13,6 +13,8 @@ def _text_filter(t):
 	t = t.replace('耶穌キリスト', 'イエスキリスト')
 	t = t.replace('支援', '詩篇')
 	t = t.replace('見言葉', '御言葉')
+	t = t.replace('新聞の図書欄', '新聞の投書欄')
+	t = t.replace('精霊', '聖霊')
 	# t = t.replace('堺シャロム福音教会', '栄シャローム福音教会')
 	# t = t.replace('堺', '栄')
 	return t
