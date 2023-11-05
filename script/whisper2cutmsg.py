@@ -17,6 +17,7 @@ def _text_filter(t):
 	t = t.replace('新聞の図書欄', '新聞の投書欄')
 	t = t.replace('精霊', '聖霊')
 	t = t.replace('手の乳なる神様', '天の父なる神様')
+	t = t.replace('おめぐみ深い', '恵み深い')
 	# t = t.replace('堺シャロム福音教会', '栄シャローム福音教会')
 	# t = t.replace('堺', '栄')
 	return t
@@ -103,10 +104,10 @@ _detectors_eiji_end = [
 	DetectorRegex(r'.*ではないでしょうか', ((0, -0.3), (20, +0.1), (21, +0.1), (22, +0.1))),
 	DetectorRegex(r'.*聖霊様来てください', ((0, -0.5), (3, +0.3), (4, +0.2))),
 	DetectorRegex(r'(アー?メン *)?祈ります', ((0, -1), (1, +0.8), (2, +0.2))),
-	DetectorRegex(r'.*一言お祈りいたします', ((0, -1), (1, +1))), # chie
+	DetectorRegex(r'.*一言お祈りいたします', ((0, -2), (1, +2))), # chie
 	DetectorSilence(1.0, 10.0),
 	# beginning of prayer
-	DetectorRegex(r'.*愛する天のお父様', ((-3, -0.5), (-2, +0.5), (0, +1))),
+	DetectorRegex(r'.*(愛する|恵み深い)天の(|父なる)(お父様|神様)', ((-3, -0.5), (-2, +0.5), (0, +1))),
 	DetectorRegex(r'.*あなたの御名を賛美します', ((-4, -0.5), (-3, +0.5), (0, +1))),
 	DetectorRegex(r'.*感謝します', ((-5, -0.5), (-4, -0.5), (0, +1))),
 	DetectorRegex(r'.*主は.*ご存知であります', ((-15, -0.3), (-2, +0.3))),
