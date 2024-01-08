@@ -25,7 +25,7 @@ step1: ch01.flac main.flac
 $(step1_done)ch01.flac $(step1_done)main.flac: ${reac_file}
 	~/script/reac2wav.sh --only-channel 9,7,8 --flac ${reac_file}
 
-step2: ch01-ebur128.txt ch01-ebu128-seek.rc ch01cut.flac maincut.flac maincut.m4a step2.rsync
+step2: ch01-ebur128.txt ch01-ebu128-seek.rc ch01cut.flac maincut.flac maincut.m4a
 	echo step2_done=1 >> files.mak
 
 ch01-ebu128-seek.rc: script/ebur128_to_seek.py ch01-ebur128.txt
@@ -45,12 +45,6 @@ $(step2_done)maincut.flac: main.flac ch01-ebu128-seek.rc
 maincut.m4a: maincut.flac
 	ffmpeg -i maincut.flac -b:a 320k -y .$@
 	mv .$@ $@
-
-step2.rsync: maincut.m4a
-	. ~/.config/msg.rc ; \
-	rsync -a maincut.m4a $${web_rsync}/main-${date}-cut_around_msg.m4a ;\
-	./script/dd-msg2.sh $${web_prefix}/main-${date}-cut_around_msg.m4a ${date}
-	touch step2.rsync
 
 step3: ch01cut-whisper.json
 	echo step3_done=1 >> files.mak
