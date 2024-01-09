@@ -57,6 +57,9 @@ class EBUR128:
 			if louder:
 				self.candidates.append((start_time, louder_last))
 
+			if not self.candidates:
+				sys.stderr.write(f'Warning: {self.filename}: No candidates are found. th={th}\n')
+
 	def find_the_best(self):
 		found_best = False
 		for cand in self.candidates:
