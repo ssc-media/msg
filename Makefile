@@ -56,7 +56,7 @@ $(step3_done)ch01cut-whisper.json: ch01cut.flac
 step4: ch01cut-seek.rc
 	echo step4_done=1 >> files.mak
 
-$(step4_done)ch01cut-seek.rc: ch01cut-whisper.json
+$(step4_done)ch01cut-seek.rc: ch01cut-whisper.json script/whisper2cutmsg.py
 	script/whisper2cutmsg.py -be --dialog-log ch01cut-seek.rc.log ch01cut-whisper.json >.$@
 	mv .$@ $@
 
