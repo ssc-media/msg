@@ -23,7 +23,7 @@ step1: ch01.flac main.flac
 	echo step1_done=1 >> files.mak
 
 $(step1_done)ch01.flac $(step1_done)main.flac: ${reac_file}
-	~/script/reac2wav.sh --only-channel 9,7,8 --flac ${reac_file}
+	~/script/reac2wav.sh --only-channel 9,10,7,8 --flac ${reac_file}
 
 step2: ch01-ebur128.txt ch01-ebu128-seek.rc ch01cut.flac maincut.flac maincut.m4a
 	echo step2_done=1 >> files.mak
