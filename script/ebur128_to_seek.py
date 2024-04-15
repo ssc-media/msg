@@ -12,7 +12,6 @@ class EBUR128:
 		self.th_add_db = -10.0;
 		self.time_add_start = -3.0
 		self.time_add_end = 3.0
-		self.time_fade = 0.0
 		self.time_range_start = None
 		self.time_range_end = None
 		self.candidates = []
@@ -85,8 +84,6 @@ class EBUR128:
 		best = self.find_the_best()
 		print(f'seek_start={best[0] + self.time_add_start}')
 		print(f'seek_end={best[1] + self.time_add_end}')
-		if self.time_fade > 0.0:
-			print(f'fade_out_start={best[1] + self.time_add_end - (best[0] + self.time_add_start) - self.time_fade}')
 
 if __name__=='__main__':
 	import argparse
@@ -99,7 +96,6 @@ if __name__=='__main__':
 	parser.add_argument('--time-candidate-center', default=None)
 	parser.add_argument('--time-add-start', default=-3.0)
 	parser.add_argument('--time-add-end', default=+3.0)
-	parser.add_argument('--time-fade', default=0.0)
 	parser.add_argument('--time-range-start', default=None)
 	parser.add_argument('--time-range-end', default=None)
 	args = parser.parse_args()
@@ -108,7 +104,6 @@ if __name__=='__main__':
 	obj.time_candidate_center = float(args.time_candidate_center) if args.time_candidate_center else None
 	obj.time_add_start = float(args.time_add_start)
 	obj.time_add_end = float(args.time_add_end)
-	obj.time_fade = float(args.time_fade)
 	obj.time_range_start = float(args.time_range_start) if args.time_range_start else None
 	obj.time_range_end = float(args.time_range_end) if args.time_range_end else None
 

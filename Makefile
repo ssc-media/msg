@@ -69,7 +69,6 @@ maincut-loudness-seek.rc: ch01cut-seek.rc maincut-ebur128.txt
 		--time-range-start=$${seek_start} --time-range-end=$${seek_end} \
 		--time-add-start=-1.5 \
 		--time-add-end=3 \
-		--time-fade=0.7 \
 	maincut-ebur128.txt > .$@
 	mv .$@ $@
 
@@ -82,7 +81,7 @@ maincut-whisper-loudness-normalize.flac: maincut.flac maincut-loudness-seek.rc
 		-f null -y /dev/null 2> $@.loudnorm.txt ; \
 	ffmpeg \
 		-ss $${seek_start} -to $${seek_end} -i maincut.flac \
-		-filter_complex "loudnorm=i=-21.0:$$(./script/loudnorm2opt.awk $@.loudnorm.txt):print_format=summary,afade=t=in:d=0.5,afade=t=out:d=0.5:start_time=$${fade_out_start}" \
+		-filter_complex "loudnorm=i=-21.0:$$(./script/loudnorm2opt.awk $@.loudnorm.txt):print_format=summary,afade=t=in:d=0.5,afade=t=out:d=0.5:start_time=$$(bc -l <<<"$$seek_end-$$seek_start-0.6")" \
 		-ar 48000 \
 		-y .$@
 	mv .$@ $@
