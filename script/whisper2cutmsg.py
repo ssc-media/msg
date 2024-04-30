@@ -107,6 +107,7 @@ _detectors_eiji_end = [
 	DetectorRegex(r'.*聖霊様来てください', ((0, -0.5), (3, +0.3), (4, +0.2))),
 	DetectorRegex(r'.*(アー?メン *)?祈ります', ((0, -0.5), (1, +0.3), (2, +0.2))),
 	DetectorRegex(r'.*アー?メン *祈ります', ((0, -0.3), (1, +0.3))),
+	DetectorRegex(r'.*神様の臨在.*前進[していき]*ましょう', ((0, -0.3), (1, -0.3), (2, +0.3))),
 	DetectorRegex(r'.*一言お祈りいたします', ((0, -2), (1, +2))), # chie
 	DetectorSilence(1.0, 10.0),
 	# beginning of prayer
@@ -139,7 +140,6 @@ _detectors_eiji_end = [
 	DetectorRegex(r'.*祝福してお祈りします', ((0, +0.2), )),
 	DetectorRegex(r'.*個人的に神様の前に', ((0, +0.1), )),
 	DetectorRegex(r'.*祈る時を持ちたい', ((0, +0.3), )),
-	DetectorRegex(r'.*アー?メン', ((0, +0.01), )),
 	DetectorRegex(r'.*しばらく.*御言葉に応答して', ((0, +0.1), )),
 	DetectorRegex(r'.*お祈りする時間を持ちたいと思います', ((0, +0.3), )),
 ]
