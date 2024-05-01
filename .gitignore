@@ -3,4 +3,12 @@
 *.pcap
 *.wav
 *.m4a
+/*.mp3
+*.flac
+*.log
+/*.rc
+/*.txt
+/step5.dd
+/step5.rsync
+/ch01cut-whisper.json
 /files.mak
