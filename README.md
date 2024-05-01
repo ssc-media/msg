@@ -2,6 +2,17 @@
 
 This repository is a script set to cut the sermon part.
 
+## Configuration file
+
+The script will read a configuration file `~/.config/msg.rc`.
+The contents of the configuration file should include these settings.
+| Variable | Description |
+| -------- | ----------- |
+| `web_rsync` | Web-site destination of audio data file that rsync will copy to |
+| `web_prefix` | HTTP or HTTPS address prefix to access the audio data file |
+| `dd_mention` | Prefix text to send a message to Discord, expecting a mention |
+| `dd_channel` | Discord channel to send the message |
+
 ## Inputs
 
 - REAC packet capture file.
